@@ -4,7 +4,7 @@ I made this game using the Defold game engine and Lua.
 It was my first project in Defold and I learned a lot about the game engine during it.
 
 If you'd like you can download the final game and try it out:
-https://github.com/2xhamzeh/Pong/tree/main/Download
+[Download](https://github.com/2xhamzeh/Pong/tree/main/Download)
 
 Here are some screenshots from the game:
 
