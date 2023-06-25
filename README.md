@@ -1,13 +1,16 @@
-# Welcome to Defold
+# Pong by 2xHamzeh
 
-This project was created from the "empty" project template.
+I made this game using the Defold game engine and Lua. 
+It was my first project in Defold and I learned a lot about the game engine during it.
 
-The settings in ["game.project"](defold://open?path=/game.project) are all the default. A bootstrap empty ["main.collection"](defold://open?path=/main/main.collection) is included.
+If you'd like you can download the final game and try it out:
+https://github.com/2xhamzeh/Pong/tree/main/Download
 
-Check out [the documentation pages](https://defold.com/learn) for examples, tutorials, manuals and API docs.
+Here are some screenshots from the game:
 
-If you run into trouble, help is available in [our forum](https://forum.defold.com).
+![Screenshot 2023-06-25 at 22 49 55](https://github.com/2xhamzeh/Pong/assets/118957694/61212cd8-7513-48e8-afb9-a5b8c09804e5)
 
-Happy Defolding!
+![Screenshot 2023-06-25 at 22 51 30](https://github.com/2xhamzeh/Pong/assets/118957694/f1859577-b314-48df-84a8-fb6567ec269a)
 
----
+![Screenshot 2023-06-25 at 22 51 03](https://github.com/2xhamzeh/Pong/assets/118957694/8f181792-5d3e-4f6a-acb7-a568cf353881)
+
