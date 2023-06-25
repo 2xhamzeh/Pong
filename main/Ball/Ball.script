@@ -1,0 +1,88 @@
+function init(self)
+	self.speed = 0
+	self.speedIncrement = 0
+	self.startingSpeedIncrement = 1/20
+	self.startingSpeed = 1000
+	math.randomseed(os.time())
+	self.direction = vmath.normalize(vmath.vector3(math.random() - 0.5,math.random() - 0.5,0))
+	self.startingPosition = go.get_position()
+
+	particlefx.play("#ballFX")
+	self.paused = false
+	self.resumeSpeed = 1000
+end
+
+function update(self, dt)
+	go.set_position(go.get_position() + self.direction * self.speed * dt)
+	self.speed = self.speed + self.speedIncrement
+end
+
+function on_message(self, message_id, message, sender)
+
+	if message_id == hash("pause") and not self.paused then
+		self.paused = true
+		self.resumeSpeed = self.speed
+		self.speed = 10
+		self.speedIncrement = 0
+	elseif message_id == hash("resume") and self.paused then
+		self.paused = false
+		self.speed = self.resumeSpeed
+		self.speedIncrement = self.startingSpeedIncrement
+	end	
+	
+	if message_id == hash("contact_point_response") then
+		if message.other_group == hash("paddle") then
+			msg.post("main:/SoundManager", "playSound", {sound = "wall"})
+			self.direction = go.get_position() - message.other_position
+			self.direction.x = self.direction.x * 2
+			self.direction = vmath.normalize(self.direction)
+		elseif message.other_group == hash("wall") then
+			msg.post("main:/SoundManager", "playSound", {sound = "wall"})
+			self.direction.y = -self.direction.y
+			if self.direction.x > -0.5 and self.direction.x <= 0 then
+				self.direction.x = -0.5
+			elseif self.direction.x < 0.5 and self.direction.x >= 0 then
+				self.direction.x = 0.5
+			end
+				
+		end
+
+	end	
+
+	if message_id == hash("collision_response") then
+		if message.other_group == hash("goalLeft") then
+			go.set_position(self.startingPosition)
+			if _G.GameState == "Running" then
+				self.speed = self.startingSpeed
+				msg.post("Gui", "increaseScore2")
+			end
+			self.direction = vmath.normalize(vmath.vector3(math.random() - 0.5,math.random() - 0.5,0))
+		elseif message.other_group == hash("goalRight") then
+			go.set_position(self.startingPosition)
+			if _G.GameState == "Running" then
+				self.speed = self.startingSpeed
+				msg.post("Gui", "increaseScore1")
+			end
+			self.direction = vmath.normalize(vmath.vector3(math.random() - 0.5,math.random() - 0.5,0))
+		end
+	end
+
+	if message_id == hash("startGame") then
+		startGame(self)
+	elseif message_id == hash("endGame") then
+		endGame(self)
+	end
+end
+
+function startGame(self)
+	self.speed = self.startingSpeed
+	self.speedIncrement = self.startingSpeedIncrement
+end
+
+function endGame(self)
+	self.speed = 0
+	self.speedIncrement = 0
+end
+
+
+

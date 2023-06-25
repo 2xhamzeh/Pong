@@ -1,0 +1,38 @@
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.speed = 1000;
+	self.movement = vmath.vector3();
+	self.startingPosition = go.get_position()
+	self.spriteSize = go.get("#Sprite", "size")/2
+end
+
+function update(self, dt)
+	if self.movement ~= 0 then
+		go.set_position(go.get_position() + self.movement * self.speed * dt)
+	end
+
+	if go.get_position().y + self.spriteSize.y/2 > _G.screenHeight then
+		go.set_position(vmath.vector3(self.startingPosition.x, _G.screenHeight - self.spriteSize.y/2, 0))
+	elseif go.get_position().y - self.spriteSize.y/2 < 0 then
+		go.set_position(vmath.vector3(self.startingPosition.x, self.spriteSize.y/2, 0))
+	end
+	self.movement = vmath.vector3()
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("up") then
+		self.movement.y = 1
+	elseif action_id == hash("down") then
+		self.movement.y = -1
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("collision_response") then
+		sprite.play_flipbook("#Sprite", "paddleAnimation")
+	end
+end
+
+
+

@@ -1,0 +1,140 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.s1 = 0
+	self.s2 = 0
+
+	self.score1 = gui.get_node("score1")
+	self.score2 = gui.get_node("score2")
+
+	self.resumeButton = gui.get_node("ResumeButton")
+	self.mainMenuButton = gui.get_node("MainMenuButton")
+	self.exitButton = gui.get_node("ExitButton")
+
+	self.counter = gui.get_node("Counter")
+	self.timer = 3
+
+	self.playAgainButton = gui.get_node("PlayAgainButton")
+	self.winnerText = gui.get_node("Winner")
+
+end
+
+function update(self, dt)
+	if self.timer > 0 then
+		self.timer = math.max(self.timer - dt, 0)
+		gui.set_text(self.counter, "" .. math.floor(self.timer) + 1)
+		if self.timer == 0 then
+			msg.post("Ball", "startGame")
+			_G.GameState = "Running"
+			gui.set_enabled(self.counter, false)
+		end
+	end
+
+	
+end
+
+function on_message(self, message_id, message, sender)
+	
+	if message_id == hash("increaseScore1") then
+		msg.post("main:/SoundManager", "playSound", {sound = "score"})
+		self.s1 = self.s1 + 1
+		gui.set_text(self.score1, "P1: " .. self.s1)
+		checkWinCon(self)
+	elseif message_id == hash("increaseScore2") then
+		msg.post("main:/SoundManager", "playSound", {sound = "score"})
+		self.s2 = self.s2 + 1
+		gui.set_text(self.score2, "P2: " .. self.s2)
+		checkWinCon(self)
+	end
+
+	
+end
+
+function on_input(self, action_id, action)
+	
+	if action_id == hash("escape") and _G.GameState == "Running" then
+		msg.post("main:/SoundManager", "playSound", {sound = "button"})
+		msg.post("Ball", "pause")
+		_G.GameState = "Pause"
+		enableButtons(self)
+		enableCursor()
+	end	
+
+	if action_id == hash("leftClick") and action.pressed then
+		if gui.is_enabled(self.resumeButton) and gui.pick_node(self.resumeButton, action.x, action.y) and _G.GameState == "Pause" then
+
+			msg.post("main:/SoundManager", "playSound", {sound = "button"})
+			
+			msg.post("Ball", "resume")
+			_G.GameState = "Running"
+			disableButtons(self)
+			disableCursor()
+		elseif gui.is_enabled(self.mainMenuButton) and gui.pick_node(self.mainMenuButton, action.x, action.y) then
+			msg.post("main:/SoundManager", "playSound", {sound = "button"})
+			msg.post("main:/loader", "mainMenu")
+		elseif gui.is_enabled(self.exitButton) and gui.pick_node(self.exitButton, action.x, action.y) then
+			msg.post("main:/SoundManager", "playSound", {sound = "button"})
+			msg.post("@system:", "exit", {code=0})
+		elseif gui.is_enabled(self.playAgainButton) and gui.pick_node(self.playAgainButton, action.x, action.y) and _G.GameState == "GameOver" then
+			msg.post("main:/SoundManager", "playSound", {sound = "button"})
+
+			msg.post("Ball", "startGame")
+			_G.GameState = "Running"
+			self.s1 = 0
+			self.s2 = 0
+			gui.set_text(self.score1, "P1: " .. self.s1)
+			gui.set_text(self.score2, "P2: " .. self.s2)
+
+			gui.set_enabled(self.winnerText, false)
+			gui.set_enabled(self.playAgainButton, false)
+			gui.set_enabled(self.mainMenuButton, false)
+			gui.set_enabled(self.exitButton, false)
+			disableCursor()
+		end
+	end
+end
+
+
+function enableButtons(self)
+	gui.set_enabled(self.resumeButton, true)
+	gui.set_enabled(self.mainMenuButton, true)
+	gui.set_enabled(self.exitButton, true)
+end
+
+function disableButtons(self)
+	gui.set_enabled(self.resumeButton, false)
+	gui.set_enabled(self.mainMenuButton, false)
+	gui.set_enabled(self.exitButton, false)
+end
+
+function checkWinCon(self)
+	if self.s1 > 10 or self.s2 > 10 then
+
+		msg.post("Ball", "endGame")
+		msg.post("main:/SoundManager", "playSound", {sound = "win"})
+		_G.GameState = "GameOver"
+
+		gui.set_enabled(self.winnerText, true)
+		if self.s1 > 10 then
+			gui.set_text(self.winnerText, "Player 1 Won!!")
+		elseif self.s2 > 10 then
+			gui.set_text(self.winnerText, "Player 2 Won!!")
+		end	
+		
+		gui.set_enabled(self.playAgainButton, true)
+		gui.set_enabled(self.mainMenuButton, true)
+		gui.set_enabled(self.exitButton, true)
+		enableCursor()
+	end
+end
+
+function enableCursor()
+	defos.set_cursor_visible(true)
+	defos.set_cursor_pos(screenWidth/2, screenHeight/2)
+	defos.set_cursor_locked(false)
+end
+
+function disableCursor()
+	defos.set_cursor_visible(false)
+	defos.set_cursor_pos(screenWidth/2, screenHeight/2)
+	defos.set_cursor_locked(true)
+end

@@ -1,0 +1,18 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.startButton =  gui.get_node("StartButton")
+	self.exitButton = gui.get_node("ExitButton")
+
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("leftClick") and action.pressed then
+		if gui.pick_node(self.startButton, action.x, action.y) then
+			msg.post("main:/SoundManager", "playSound", {sound = "button"})
+			msg.post("main:/loader", "startGame")
+		elseif gui.pick_node(self.exitButton, action.x, action.y) then
+			msg.post("main:/SoundManager", "playSound", {sound = "button"})
+			msg.post("@system:", "exit", {code=0})
+		end
+	end
+end

@@ -1,0 +1,60 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+
+	
+	enableUI()
+	_G.Scene = "MainMenu"
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("startGame") then
+		disableUI()
+		enableGameplay()
+		_G.Scene = "Game"
+	elseif message_id == hash("mainMenu") then
+		disableGameplay()
+		enableUI()
+		_G.Scene = "MainMenu"
+	end
+end
+
+function enableUI()
+	msg.post("#UIProxy", "load")
+	msg.post("#UIProxy", "init")
+	msg.post("#UIProxy", "enable")
+
+	defos.set_cursor_visible(true)
+	defos.set_cursor_pos(screenWidth/2, screenHeight/2)
+	defos.set_cursor_locked(false)
+end
+
+function disableUI()
+	
+	msg.post("#UIProxy", "disable")
+	msg.post("#UIProxy", "final")
+	msg.post("#UIProxy", "unload")
+
+	defos.set_cursor_visible(false)
+	defos.set_cursor_pos(screenWidth/2, screenHeight/2)
+	defos.set_cursor_locked(true)
+end
+
+function enableGameplay()
+	msg.post("#GameplayProxy", "load")
+	msg.post("#GameplayProxy", "init")
+	msg.post("#GameplayProxy", "enable")
+end
+
+function disableGameplay()
+	
+	msg.post("#GameplayProxy", "disable")
+	msg.post("#GameplayProxy", "final")
+	msg.post("#GameplayProxy", "unload")
+	_G.GameState = nil
+end
+
+
+
+
+
+

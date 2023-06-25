@@ -1,0 +1,16 @@
+Scene = "" -- "MainMenu" "Game"
+GameState = "" -- "Running" "Pause" "GameOver" Nil
+screenWidth = 1920
+screenHeight = 1080
+
+function init(self)
+	msg.post("@render:", "use_fixed_fit_projection")
+	defos.disable_window_resize()
+	defos.disable_minimize_button()
+	defos.disable_maximize_button()
+	--defos.set_cursor_visible(false)
+	--defos.set_cursor_pos(screenWidth/2, screenHeight/2)
+	--defos.set_cursor_locked(true)
+	defos.set_window_title("Pong by Hamzeh")
+	defos.set_fullscreen(true)
+end

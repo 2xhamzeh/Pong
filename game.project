@@ -1,0 +1,31 @@
+[bootstrap]
+main_collection = /main/main.collectionc
+
+[script]
+shared_state = 1
+
+[display]
+width = 1920
+height = 1080
+vsync = 0
+high_dpi = 0
+
+[android]
+input_method = HiddenInputField
+
+[project]
+title = Pong
+dependencies#0 = https://github.com/subsoap/defos/archive/refs/tags/v2.7.0.zip
+
+[physics]
+gravity_y = 0.0
+scale = 1.0
+
+[graphics]
+default_texture_min_filter = nearest
+default_texture_mag_filter = nearest
+verify_graphics_calls = 1
+
+[sprite]
+subpixels = 0
+
